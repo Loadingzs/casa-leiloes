@@ -4,6 +4,8 @@ import javax.swing.JOptionPane;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 
+// Implementacao do cadastro e listagem de produtos
+
 public class ProdutosDAO {
     
     Connection conn;
