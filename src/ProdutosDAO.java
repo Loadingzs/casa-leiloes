@@ -5,7 +5,6 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 
 // Implementacao do cadastro e listagem de produtos
-
 public class ProdutosDAO {
     
     Connection conn;
@@ -29,6 +28,7 @@ public class ProdutosDAO {
     }
     
     public ArrayList<ProdutosDTO> listarProdutos() {
+        listagem = new ArrayList<>();
         try {
             conn = new conectaDAO().connectDB();
             String sql = "SELECT id, nome, valor, status FROM produtos";
@@ -44,6 +44,40 @@ public class ProdutosDAO {
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Erro ao listar produtos: " + e.getMessage());
+        }
+        return listagem;
+    }
+
+    public void venderProduto(int id) {
+        try {
+            conn = new conectaDAO().connectDB();
+            String sql = "UPDATE produtos SET status = 'Vendido' WHERE id = ?";
+            prep = conn.prepareStatement(sql);
+            prep.setInt(1, id);
+            prep.executeUpdate();
+            JOptionPane.showMessageDialog(null, "Produto vendido com sucesso!");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Erro ao vender produto: " + e.getMessage());
+        }
+    }
+
+    public ArrayList<ProdutosDTO> listarProdutosVendidos() {
+        listagem = new ArrayList<>();
+        try {
+            conn = new conectaDAO().connectDB();
+            String sql = "SELECT id, nome, valor, status FROM produtos WHERE status = 'Vendido'";
+            prep = conn.prepareStatement(sql);
+            resultset = prep.executeQuery();
+            while (resultset.next()) {
+                ProdutosDTO produto = new ProdutosDTO();
+                produto.setId(resultset.getInt("id"));
+                produto.setNome(resultset.getString("nome"));
+                produto.setValor(resultset.getInt("valor"));
+                produto.setStatus(resultset.getString("status"));
+                listagem.add(produto);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Erro ao listar vendidos: " + e.getMessage());
         }
         return listagem;
     }
